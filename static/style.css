@@ -1,0 +1,5 @@
+body { font-family: Arial, sans-serif; margin: 20px; }
+#chat { border: 1px solid #ccc; padding: 10px; max-width: 600px; margin-bottom: 10px; }
+.mensagem { margin: 5px 0; }
+.mensagem.Usuário { color: blue; }
+.mensagem.Assistente { color: green; }

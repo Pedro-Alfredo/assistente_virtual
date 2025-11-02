@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<title>Assistente Virtual</title>
+<link rel="stylesheet" href="/static/style.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h1>Assistente Virtual (Modo Demo)</h1>
+<div id="chat">
+    {% for msg in mensagens %}
+        <div class="mensagem {{msg.de}}"><strong>{{msg.de}}:</strong> {{msg.texto}}</div>
+    {% endfor %}
+</div>
+<form id="formMensagem">
+    <input type="text" name="mensagem" placeholder="Digite sua mensagem..." required>
+    <button type="submit">Enviar</button>
+</form>
+<button id="simular">Simular Mensagem</button>
+<script>
+$('#formMensagem').submit(function(e){
+    e.preventDefault();
+    $.post('/enviar', $(this).serialize(), function(data){
+        location.reload();
+    });
+});
+$('#simular').click(function(){
+    $.post('/simular', {}, function(data){
+        location.reload();
+    });
+});
+</script>
+</body>
+</html>
