@@ -1,30 +1,19 @@
+# app.py
 from flask import Flask, render_template, request, jsonify
-from services.ai_brain import gerar_resposta
-from services.whatsapp import simular_receber_mensagem
+from services.ai_brain import responder
 
 app = Flask(__name__)
 
-mensagens = []
-
-@app.route('/')
+@app.route("/")
 def dashboard():
-    return render_template('dashboard.html', mensagens=mensagens)
+    return render_template("dashboard.html")
 
-@app.route('/enviar', methods=['POST'])
-def enviar_mensagem():
-    texto = request.form.get('mensagem')
-    resposta = gerar_resposta(texto)
-    mensagens.append({'de':'Usuário','texto': texto})
-    mensagens.append({'de':'Assistente','texto': resposta})
-    return jsonify({'resposta': resposta})
+@app.route("/chat", methods=["POST"])
+def chat():
+    data = request.get_json()
+    mensagem = data.get("mensagem", "")
+    resposta = responder(mensagem)
+    return jsonify({"resposta": resposta})
 
-@app.route('/simular', methods=['POST'])
-def simular_mensagem():
-    texto = simular_receber_mensagem()
-    resposta = gerar_resposta(texto)
-    mensagens.append({'de':'Usuário','texto': texto})
-    mensagens.append({'de':'Assistente','texto': resposta})
-    return jsonify({'mensagem': texto, 'resposta': resposta})
-
-if __name__ == '__main__':
-    app.run(debug=False)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
