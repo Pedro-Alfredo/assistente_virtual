@@ -1,35 +1,40 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-<meta charset="UTF-8">
-<title>Assistente Virtual</title>
-<link rel="stylesheet" href="/static/style.css">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <meta charset="UTF-8">
+  <title>Assistente Virtual - Modo Profissional</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-<h1>Assistente Virtual (Modo Demo)</h1>
-<div id="chat">
-    {% for msg in mensagens %}
-        <div class="mensagem {{msg.de}}"><strong>{{msg.de}}:</strong> {{msg.texto}}</div>
-    {% endfor %}
-</div>
-<form id="formMensagem">
-    <input type="text" name="mensagem" placeholder="Digite sua mensagem..." required>
-    <button type="submit">Enviar</button>
-</form>
-<button id="simular">Simular Mensagem</button>
-<script>
-$('#formMensagem').submit(function(e){
-    e.preventDefault();
-    $.post('/enviar', $(this).serialize(), function(data){
-        location.reload();
-    });
-});
-$('#simular').click(function(){
-    $.post('/simular', {}, function(data){
-        location.reload();
-    });
-});
-</script>
+  <div class="chat-container">
+    <h2>💼 Assistente Virtual (Profissional)</h2>
+    <div id="chat-box" class="chat-box">
+      <div class="msg assistente">Olá! Sou o seu assistente virtual profissional. Como posso ajudar?</div>
+    </div>
+    <div class="input-area">
+      <input id="mensagem" type="text" placeholder="Escreva aqui..." />
+      <button onclick="enviarMensagem()">Enviar</button>
+    </div>
+  </div>
+
+  <script>
+    async function enviarMensagem() {
+      const input = document.getElementById("mensagem");
+      const chatBox = document.getElementById("chat-box");
+      const texto = input.value.trim();
+      if (!texto) return;
+      chatBox.innerHTML += `<div class='msg usuario'><b>Você:</b> ${texto}</div>`;
+      input.value = "";
+
+      const resp = await fetch("/chat", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({mensagem: texto})
+      });
+      const data = await resp.json();
+      chatBox.innerHTML += `<div class='msg assistente'><b>Assistente:</b> ${data.resposta}</div>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  </script>
 </body>
 </html>
